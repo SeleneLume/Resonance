@@ -1,6 +1,6 @@
 {
   "name": "resonance-player",
-  "version": "1.0.0",
+  "version": "1.4.1",
   "description": "A local-first, high-quality music player",
   "main": "src/main.js",
   "scripts": {
@@ -63,8 +63,9 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "PON-TU-USUARIO-DE-GITHUB-AQUI",
-        "repo": "PON-EL-NOMBRE-DE-TU-REPO-AQUI"
+        "owner": "SeleneLume",
+        "repo": "Resonance",
+        "releaseType": "release"
       }
     ],
     "directories": {

@@ -75,16 +75,32 @@
         <div id="npTitle" class="np-title">No track playing</div>
         <div id="npArtist" class="np-artist">—</div>
       </div>
-      <button id="npFavBtn" class="icon-btn" data-tooltip="Add to Liked Songs">🤍</button>
+      <button id="npFavBtn" class="icon-btn fav-btn" data-tooltip="Add to Liked Songs">
+        <svg class="icon-heart-outline" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20.2s-7.6-4.6-9.9-9.2C.6 7.4 2.3 4 5.8 3.4c2-.34 3.9.5 5 2.1a1 1 0 0 0 1.6 0c1.1-1.6 3-2.44 5-2.1 3.5.6 5.2 4 3.7 7.6-2.3 4.6-9.9 9.2-9.9 9.2Z"/></svg>
+        <svg class="icon-heart-filled" viewBox="0 0 24 24"><path fill="currentColor" d="M12 20.2s-7.6-4.6-9.9-9.2C.6 7.4 2.3 4 5.8 3.4c2-.34 3.9.5 5 2.1a1 1 0 0 0 1.6 0c1.1-1.6 3-2.44 5-2.1 3.5.6 5.2 4 3.7 7.6-2.3 4.6-9.9 9.2-9.9 9.2Z"/></svg>
+      </button>
     </div>
 
     <div class="nowbar-center">
       <div class="transport">
-        <button id="shuffleBtn" class="icon-btn" data-tooltip="Shuffle: off">🔀</button>
-        <button id="prevBtn" class="icon-btn" data-tooltip="Previous track">⏮️</button>
-        <button id="playBtn" class="play-btn" data-tooltip="Play">▶️</button>
-        <button id="nextBtn" class="icon-btn" data-tooltip="Next track">⏭️</button>
-        <button id="repeatBtn" class="icon-btn" data-tooltip="Repeat: off">🔁</button>
+        <button id="shuffleBtn" class="icon-btn shuffle-btn" data-tooltip="Shuffle: off">
+          <svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5h2.7c1.7 0 3.28.87 4.2 2.3l5.3 8.2c.92 1.43 2.5 2.3 4.2 2.3H21"/><path d="M3 17.5h2.7c1.7 0 3.28-.87 4.2-2.3l.6-.93"/><path d="M13.9 8.83l.6-.93c.92-1.43 2.5-2.3 4.2-2.3H21"/><path d="M18 3.5l3 3-3 3"/><path d="M18 14.5l3 3-3 3"/></g></svg>
+          <span class="smart-dot"></span>
+        </button>
+        <button id="prevBtn" class="icon-btn" data-tooltip="Previous track">
+          <svg viewBox="0 0 24 24"><rect fill="currentColor" x="4.5" y="5" width="2.6" height="14" rx="1.3"/><path fill="currentColor" d="M19.2 6.3c1.1-.74 2.5.06 2.5 1.4v8.6c0 1.34-1.4 2.14-2.5 1.4l-6.9-4.6c-.96-.64-.96-2.06 0-2.7l6.9-4.6Z"/></svg>
+        </button>
+        <button id="playBtn" class="play-btn" data-tooltip="Play">
+          <svg class="icon-play" viewBox="0 0 24 24"><path fill="currentColor" d="M9 6.2c0-1.7 1.86-2.72 3.28-1.82l7.9 5.8a2.15 2.15 0 0 1 0 3.64l-7.9 5.8C10.86 20.52 9 19.5 9 17.8V6.2Z"/></svg>
+          <svg class="icon-pause" viewBox="0 0 24 24"><rect fill="currentColor" x="6.5" y="5" width="4.2" height="14" rx="1.8"/><rect fill="currentColor" x="13.3" y="5" width="4.2" height="14" rx="1.8"/></svg>
+        </button>
+        <button id="nextBtn" class="icon-btn" data-tooltip="Next track">
+          <svg viewBox="0 0 24 24"><rect fill="currentColor" x="16.9" y="5" width="2.6" height="14" rx="1.3"/><path fill="currentColor" d="M4.8 6.3c-1.1-.74-2.5.06-2.5 1.4v8.6c0 1.34 1.4 2.14 2.5 1.4l6.9-4.6c.96-.64.96-2.06 0-2.7L4.8 6.3Z"/></svg>
+        </button>
+        <button id="repeatBtn" class="icon-btn repeat-btn" data-tooltip="Repeat: off">
+          <svg class="icon-repeat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 7H8a4 4 0 0 0-4 4v1"/><path d="M15 4l2.5 3L15 10"/><path d="M6.5 17H16a4 4 0 0 0 4-4v-1"/><path d="M9 20l-2.5-3L9 14"/></g></svg>
+          <span class="repeat-one-badge">1</span>
+        </button>
       </div>
       <div class="scrub-row">
         <span id="curTime" class="time">0:00</span>
@@ -95,13 +111,18 @@
 
     <div class="nowbar-right">
       <span id="qualityBadge" class="quality-badge">—</span>
-      <button id="abLoopBtn" class="icon-btn ab-btn" data-tooltip="A/B Loop: set point A">🔁AB</button>
+      <button id="abLoopBtn" class="icon-btn ab-btn" data-tooltip="A/B Loop: set point A">AB</button>
       <button id="sleepTimerBtn" class="icon-btn" data-tooltip="Sleep Timer">😴</button>
       <button id="miniPlayerBtn" class="icon-btn" data-tooltip="Open floating Mini Player">🪟</button>
       <button id="lyricsBtn" class="icon-btn" data-tooltip="Show Lyrics panel">📝</button>
       <button id="queueBtn" class="icon-btn" data-tooltip="Show Queue">📑</button>
       <span class="vol-wrap">
-        🔊 <input id="volBar" type="range" min="0" max="100" value="80" />
+        <button id="muteBtnSmall" class="icon-btn mute-btn" data-tooltip="Mute">
+          <svg class="icon-vol-high" viewBox="0 0 24 24"><path fill="currentColor" d="M4 10v4h3.2l4.3 3.6V6.4L7.2 10H4Z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 9c1.1 1 1.1 5 0 6"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M18.3 6.5c2.5 2.6 2.5 8.4 0 11"/></svg>
+          <svg class="icon-vol-low" viewBox="0 0 24 24"><path fill="currentColor" d="M4 10v4h3.2l4.3 3.6V6.4L7.2 10H4Z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 9c1.1 1 1.1 5 0 6"/></svg>
+          <svg class="icon-vol-mute" viewBox="0 0 24 24"><path fill="currentColor" d="M4 10v4h3.2l4.3 3.6V6.4L7.2 10H4Z"/><path fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" d="M15.8 9.3l4.4 4.4"/><path fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" d="M20.2 9.3l-4.4 4.4"/></svg>
+        </button>
+        <input id="volBar" type="range" min="0" max="100" value="80" />
       </span>
     </div>
   </footer>
@@ -166,7 +187,10 @@
             <div class="np-big-artist" id="npBigArtist">—</div>
             <div class="np-big-quality" id="npBigQuality">—</div>
           </div>
-          <button id="npBigFav" class="icon-btn np-big-fav" data-tooltip="Add to Liked Songs">🤍</button>
+          <button id="npBigFav" class="icon-btn np-big-fav fav-btn" data-tooltip="Add to Liked Songs">
+            <svg class="icon-heart-outline" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20.2s-7.6-4.6-9.9-9.2C.6 7.4 2.3 4 5.8 3.4c2-.34 3.9.5 5 2.1a1 1 0 0 0 1.6 0c1.1-1.6 3-2.44 5-2.1 3.5.6 5.2 4 3.7 7.6-2.3 4.6-9.9 9.2-9.9 9.2Z"/></svg>
+            <svg class="icon-heart-filled" viewBox="0 0 24 24"><path fill="currentColor" d="M12 20.2s-7.6-4.6-9.9-9.2C.6 7.4 2.3 4 5.8 3.4c2-.34 3.9.5 5 2.1a1 1 0 0 0 1.6 0c1.1-1.6 3-2.44 5-2.1 3.5.6 5.2 4 3.7 7.6-2.3 4.6-9.9 9.2-9.9 9.2Z"/></svg>
+          </button>
         </div>
 
         <div class="np-big-scrub">
@@ -178,15 +202,32 @@
         </div>
 
         <div class="transport np-big-transport">
-          <button id="npBigShuffle" class="icon-btn" data-tooltip="Shuffle">🔀</button>
-          <button id="npBigPrev" class="icon-btn" data-tooltip="Previous track">⏮️</button>
-          <button id="npBigPlay" class="play-btn big" data-tooltip="Play">▶️</button>
-          <button id="npBigNext" class="icon-btn" data-tooltip="Next track">⏭️</button>
-          <button id="npBigRepeat" class="icon-btn" data-tooltip="Repeat">🔁</button>
+          <button id="npBigShuffle" class="icon-btn shuffle-btn" data-tooltip="Shuffle">
+            <svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5h2.7c1.7 0 3.28.87 4.2 2.3l5.3 8.2c.92 1.43 2.5 2.3 4.2 2.3H21"/><path d="M3 17.5h2.7c1.7 0 3.28-.87 4.2-2.3l.6-.93"/><path d="M13.9 8.83l.6-.93c.92-1.43 2.5-2.3 4.2-2.3H21"/><path d="M18 3.5l3 3-3 3"/><path d="M18 14.5l3 3-3 3"/></g></svg>
+            <span class="smart-dot"></span>
+          </button>
+          <button id="npBigPrev" class="icon-btn" data-tooltip="Previous track">
+            <svg viewBox="0 0 24 24"><rect fill="currentColor" x="4.5" y="5" width="2.6" height="14" rx="1.3"/><path fill="currentColor" d="M19.2 6.3c1.1-.74 2.5.06 2.5 1.4v8.6c0 1.34-1.4 2.14-2.5 1.4l-6.9-4.6c-.96-.64-.96-2.06 0-2.7l6.9-4.6Z"/></svg>
+          </button>
+          <button id="npBigPlay" class="play-btn big" data-tooltip="Play">
+            <svg class="icon-play" viewBox="0 0 24 24"><path fill="currentColor" d="M9 6.2c0-1.7 1.86-2.72 3.28-1.82l7.9 5.8a2.15 2.15 0 0 1 0 3.64l-7.9 5.8C10.86 20.52 9 19.5 9 17.8V6.2Z"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24"><rect fill="currentColor" x="6.5" y="5" width="4.2" height="14" rx="1.8"/><rect fill="currentColor" x="13.3" y="5" width="4.2" height="14" rx="1.8"/></svg>
+          </button>
+          <button id="npBigNext" class="icon-btn" data-tooltip="Next track">
+            <svg viewBox="0 0 24 24"><rect fill="currentColor" x="16.9" y="5" width="2.6" height="14" rx="1.3"/><path fill="currentColor" d="M4.8 6.3c-1.1-.74-2.5.06-2.5 1.4v8.6c0 1.34 1.4 2.14 2.5 1.4l6.9-4.6c.96-.64.96-2.06 0-2.7L4.8 6.3Z"/></svg>
+          </button>
+          <button id="npBigRepeat" class="icon-btn repeat-btn" data-tooltip="Repeat">
+            <svg class="icon-repeat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 7H8a4 4 0 0 0-4 4v1"/><path d="M15 4l2.5 3L15 10"/><path d="M6.5 17H16a4 4 0 0 0 4-4v-1"/><path d="M9 20l-2.5-3L9 14"/></g></svg>
+            <span class="repeat-one-badge">1</span>
+          </button>
         </div>
 
         <div class="np-big-extras">
-          <button id="npBigMute" class="icon-btn np-vol-icon" data-tooltip="Mute">🔊</button>
+          <button id="npBigMute" class="icon-btn np-vol-icon mute-btn" data-tooltip="Mute">
+            <svg class="icon-vol-high" viewBox="0 0 24 24"><path fill="currentColor" d="M4 10v4h3.2l4.3 3.6V6.4L7.2 10H4Z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 9c1.1 1 1.1 5 0 6"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M18.3 6.5c2.5 2.6 2.5 8.4 0 11"/></svg>
+            <svg class="icon-vol-low" viewBox="0 0 24 24"><path fill="currentColor" d="M4 10v4h3.2l4.3 3.6V6.4L7.2 10H4Z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 9c1.1 1 1.1 5 0 6"/></svg>
+            <svg class="icon-vol-mute" viewBox="0 0 24 24"><path fill="currentColor" d="M4 10v4h3.2l4.3 3.6V6.4L7.2 10H4Z"/><path fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" d="M15.8 9.3l4.4 4.4"/><path fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" d="M20.2 9.3l-4.4 4.4"/></svg>
+          </button>
           <input id="npBigVol" type="range" min="0" max="100" value="80" />
         </div>
       </section>

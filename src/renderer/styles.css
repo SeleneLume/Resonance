@@ -454,6 +454,56 @@ body {
   0%, 100% { box-shadow: 0 4px 20px rgba(255,255,255,0.18), 0 0 30px var(--accent-soft); }
   50% { box-shadow: 0 4px 20px rgba(255,255,255,0.18), 0 0 48px var(--accent-soft); }
 }
+
+/* Transport icons: real SVGs instead of emoji, sized to sit inside the
+   existing circular button chrome. currentColor lets each button's normal/
+   hover/on color rules (already defined above) drive the icon color too. */
+.icon-btn svg { width: 17px; height: 17px; display: block; flex-shrink: 0; }
+.play-btn svg { width: 15px; height: 15px; display: block; }
+.play-btn.big svg { width: 26px; height: 26px; }
+.play-btn .icon-play { margin-left: 1px; } /* optical centering — the triangle's visual weight sits left of its box */
+.play-btn.big .icon-play { margin-left: 2px; }
+
+/* Dual/multi-state icon buttons: every state's SVG ships in the markup,
+   hidden by default, and a class on the button (set from renderer.js)
+   picks which one shows — same pattern the emoji version used
+   (textContent swap), just without redrawing anything.  Applies to both
+   the mini now-playing bar and the big immersive-view buttons since the
+   rule targets the shared class, not an #id. */
+.play-btn .icon-pause { display: none; }
+.play-btn.is-playing .icon-play { display: none; }
+.play-btn.is-playing .icon-pause { display: block; }
+
+.repeat-btn { position: relative; }
+.repeat-btn .repeat-one-badge {
+  display: none; position: absolute; bottom: 0; right: 0;
+  width: 12px; height: 12px; border-radius: 50%; background: var(--accent);
+  color: #fff; font-size: 8.5px; font-weight: 800; line-height: 12px; text-align: center;
+  box-shadow: 0 0 6px var(--accent), 0 0 0 2px var(--bg-elev);
+}
+.repeat-btn.mode-one .repeat-one-badge { display: block; }
+
+.fav-btn .icon-heart-filled { display: none; }
+.fav-btn.is-fav .icon-heart-outline { display: none; }
+.fav-btn.is-fav .icon-heart-filled { display: block; }
+.fav-btn.is-fav { color: #ff6b9d; }
+.fav-btn.is-fav:hover { color: #ff8fb3; }
+
+.mute-btn .icon-vol-low, .mute-btn .icon-vol-mute { display: none; }
+.mute-btn.vol-low .icon-vol-high { display: none; }
+.mute-btn.vol-low .icon-vol-low { display: block; }
+.mute-btn.vol-muted .icon-vol-high { display: none; }
+.mute-btn.vol-muted .icon-vol-mute { display: block; }
+
+/* Small glowing dot badge on the shuffle button for "smart shuffle" mode
+   (previously communicated by appending a ✨ emoji to the button text). */
+.shuffle-btn { position: relative; }
+.shuffle-btn .smart-dot {
+  display: none; position: absolute; top: 3px; right: 3px; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px var(--accent);
+}
+.shuffle-btn.is-smart .smart-dot { display: block; }
+
 .scrub-row { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 520px; }
 .time { font-size: 11px; color: var(--text-faint); width: 36px; }
 input[type="range"] { -webkit-appearance: none; flex: 1; height: 4px; border-radius: 4px; background: var(--bg-elev-2); outline: none; transition: background .3s ease; }

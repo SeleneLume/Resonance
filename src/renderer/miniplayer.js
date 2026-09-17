@@ -68,7 +68,7 @@ window.api.onMiniPlayerState((state) => {
   }
 
   isPlaying = state.isPlaying;
-  document.getElementById('playBtn').textContent = isPlaying ? '⏸️' : '▶️';
+  document.getElementById('playBtn').classList.toggle('is-playing', isPlaying);
 
   const pct = state.duration ? (state.currentTime / state.duration) * 100 : 0;
   if (!waveRunning) {

@@ -886,6 +886,7 @@ async function refreshOutputDevices() {
   applyAccent(settings.accent);
   document.body.classList.toggle('density-compact', settings.rowDensity === 'compact');
   document.getElementById('volBar').value = Math.round(settings.volume * 100);
+  syncMuteIconUI(settings.volume);
 
   wireNav();
   wireTransport();
@@ -3023,7 +3024,8 @@ function onEnded(key) {
   if (checkSleepTimerOnTrackEnd(justFinished, nextTrackForSleepCheck)) return;
 
   if (nextIdx === -1) {
-    document.getElementById('playBtn').textContent = '▶️';
+    document.getElementById('playBtn').classList.remove('is-playing');
+    document.getElementById('npBigPlay')?.classList.remove('is-playing');
     return;
   }
 
@@ -3087,12 +3089,12 @@ function updateNowPlayingFavIcon() {
   const track = queue[queueIndex];
   const btn = document.getElementById('npFavBtn');
   const bigBtn = document.getElementById('npBigFav');
-  if (!track) { btn.textContent = '🤍'; if (bigBtn) bigBtn.textContent = '🤍'; return; }
-  const icon = library.favorites.songs.includes(track.id) ? '❤️' : '🤍';
-  btn.textContent = icon;
+  const isFav = !!track && library.favorites.songs.includes(track.id);
+  btn.classList.toggle('is-fav', isFav);
+  btn.dataset.tooltip = isFav ? 'Remove from Liked Songs' : 'Add to Liked Songs';
   if (bigBtn) {
-    bigBtn.textContent = icon;
-    bigBtn.dataset.tooltip = icon === '❤️' ? 'Remove from Liked Songs' : 'Add to Liked Songs';
+    bigBtn.classList.toggle('is-fav', isFav);
+    bigBtn.dataset.tooltip = isFav ? 'Remove from Liked Songs' : 'Add to Liked Songs';
   }
   refreshDynamicTooltips();
 }
@@ -3134,8 +3136,7 @@ function wireTransport() {
   shuffleBtn.addEventListener('click', () => {
     const wasOff = shuffleMode === 'off';
     shuffleMode = shuffleMode === 'off' ? 'random' : shuffleMode === 'random' ? 'smart' : 'off';
-    shuffleBtn.classList.toggle('on', shuffleMode !== 'off');
-    shuffleBtn.textContent = shuffleMode === 'smart' ? '🔀✨' : '🔀';
+    syncShuffleRepeatUI();
 
     if (wasOff && shuffleMode !== 'off') {
       preShuffleQueue = [...queue]; // remember the original order to restore later
@@ -3156,8 +3157,7 @@ function wireTransport() {
   const repeatBtn = document.getElementById('repeatBtn');
   repeatBtn.addEventListener('click', () => {
     repeatMode = repeatMode === 'off' ? 'all' : repeatMode === 'all' ? 'one' : 'off';
-    repeatBtn.textContent = repeatMode === 'one' ? '🔂' : '🔁';
-    repeatBtn.classList.toggle('on', repeatMode !== 'off');
+    syncShuffleRepeatUI();
     refreshDynamicTooltips();
   });
 
@@ -3176,7 +3176,7 @@ function wireTransport() {
   document.getElementById('volBar').addEventListener('input', async (e) => {
     const v = e.target.value / 100;
     document.getElementById('npBigVol').value = e.target.value;
-    document.getElementById('npBigMute').textContent = v === 0 ? '🔇' : v < 0.5 ? '🔉' : '🔊';
+    syncMuteIconUI(v);
     players.A && (players.A.el.volume = v);
     players.B && (players.B.el.volume = v);
     applyVolumeToYtPlayer(v);
@@ -3200,16 +3200,44 @@ function wireTransport() {
 let overlayOpen = false;
 let lastMiniPush = 0;
 
+// Applies shuffleMode/repeatMode to every copy of the shuffle/repeat
+// buttons — the mini now-playing bar's and the immersive overlay's — since
+// npBigShuffle/npBigRepeat only forward their clicks to the small ones
+// (see wireControls) and never had their own visual state before.
+function syncShuffleRepeatUI() {
+  ['shuffleBtn', 'npBigShuffle'].forEach((id) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.classList.toggle('on', shuffleMode !== 'off');
+    btn.classList.toggle('is-smart', shuffleMode === 'smart');
+  });
+  ['repeatBtn', 'npBigRepeat'].forEach((id) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.classList.toggle('on', repeatMode !== 'off');
+    btn.classList.toggle('mode-one', repeatMode === 'one');
+  });
+}
+
+// Same idea as syncShuffleRepeatUI but for the two volume/mute buttons
+// (the small one in the nowbar and npBigMute in the immersive overlay).
+function syncMuteIconUI(v) {
+  ['muteBtnSmall', 'npBigMute'].forEach((id) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.classList.toggle('vol-muted', v === 0);
+    btn.classList.toggle('vol-low', v > 0 && v < 0.5);
+    btn.dataset.tooltip = v === 0 ? 'Unmute' : 'Mute';
+  });
+}
+
 let lastPlayIconState = null;
 function updatePlayButtonsUI() {
   const isPlaying = queue.length > 0 && !isPlaybackPaused();
   if (isPlaying === lastPlayIconState) return; // avoid clobbering ripple children every frame
   lastPlayIconState = isPlaying;
-  const icon = isPlaying ? '⏸️' : '▶️';
   const playBtn = document.getElementById('playBtn');
   const bigBtn = document.getElementById('npBigPlay');
-  playBtn.textContent = icon;
-  bigBtn.textContent = icon;
   playBtn.classList.toggle('is-playing', isPlaying);
   bigBtn.classList.toggle('is-playing', isPlaying);
 }
@@ -3363,6 +3391,7 @@ function wireOverlay() {
     volBar.dispatchEvent(new Event('input'));
   });
   document.getElementById('npBigMute').addEventListener('click', () => toggleMute());
+  document.getElementById('muteBtnSmall').addEventListener('click', () => toggleMute());
 
   document.getElementById('npVideoToggle').addEventListener('click', () => toggleNpVideoMode());
 
@@ -4710,7 +4739,7 @@ function wireAbLoop() {
 function updateAbLoopButton() {
   const btn = document.getElementById('abLoopBtn');
   btn.classList.toggle('on', abLoop.stage !== 'idle');
-  btn.textContent = abLoop.stage === 'idle' ? '🔁AB' : abLoop.stage === 'hasA' ? 'A·set B' : 'A↔B';
+  btn.textContent = abLoop.stage === 'idle' ? 'AB' : abLoop.stage === 'hasA' ? 'A·set B' : 'A↔B';
   refreshDynamicTooltips();
 }
 
@@ -4983,12 +5012,7 @@ async function restoreLastSession() {
   queueIndex = Math.min(Math.max(session.queueIndex || 0, 0), queue.length - 1);
   shuffleMode = session.shuffleMode || 'off';
   repeatMode = session.repeatMode || 'off';
-  const shuffleBtn = document.getElementById('shuffleBtn');
-  shuffleBtn.classList.toggle('on', shuffleMode !== 'off');
-  shuffleBtn.textContent = shuffleMode === 'smart' ? '🔀✨' : '🔀';
-  const repeatBtn = document.getElementById('repeatBtn');
-  repeatBtn.textContent = repeatMode === 'one' ? '🔂' : '🔁';
-  repeatBtn.classList.toggle('on', repeatMode !== 'off');
+  syncShuffleRepeatUI();
   await hardLoadAndPlay(activeKey, queueIndex, { autoplay: false, seekTo: session.currentTime || 0 });
   showToast('Resumed where you left off', '⏯️');
 }

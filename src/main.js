@@ -218,21 +218,51 @@ app.on('activate', () => {
 //      installer and uploads it as a new GitHub Release. Every PC with the
 //      app already installed will pick it up next time it's opened (or
 //      within a few hours if left running).
+
+const updateLogFile = () => path.join(userDataPath(), 'update-log.txt');
+
+function logUpdate(msg) {
+  const line = `[${new Date().toISOString()}] ${msg}`;
+  console.log(line);
+  try {
+    fs.appendFileSync(updateLogFile(), line + '\n');
+  } catch (e) {
+    // if we can't even write the log, nothing more we can do here
+  }
+}
+
 function setupAutoUpdater() {
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
 
+  logUpdate(`Auto-updater initialized. Current version: ${app.getVersion()}`);
+
+  autoUpdater.on('checking-for-update', () => {
+    logUpdate('Checking for update...');
+  });
+  autoUpdater.on('update-available', (info) => {
+    logUpdate(`Update available: ${info.version} (current: ${app.getVersion()})`);
+  });
+  autoUpdater.on('update-not-available', (info) => {
+    logUpdate(`No update available. Latest on server: ${info.version}`);
+  });
+  autoUpdater.on('download-progress', (progress) => {
+    logUpdate(`Downloading: ${Math.round(progress.percent)}%`);
+  });
   autoUpdater.on('update-downloaded', (info) => {
+    logUpdate(`Update downloaded: ${info.version}. Will install on quit.`);
     mainWindow?.webContents.send('update:downloaded', info.version);
   });
   autoUpdater.on('error', (err) => {
-    console.error('Auto-update check failed:', err == null ? 'unknown error' : (err.stack || err.message));
+    logUpdate(`ERROR: ${err == null ? 'unknown error' : (err.stack || err.message)}`);
   });
 
-  autoUpdater.checkForUpdates().catch(() => {});
+  autoUpdater.checkForUpdates().catch((err) => logUpdate(`checkForUpdates() threw: ${err.message}`));
   // Long-running sessions (this is a music player, people leave it open)
   // won't otherwise notice a release that came out after launch.
-  setInterval(() => autoUpdater.checkForUpdates().catch(() => {}), 4 * 60 * 60 * 1000);
+  setInterval(() => {
+    autoUpdater.checkForUpdates().catch((err) => logUpdate(`checkForUpdates() threw: ${err.message}`));
+  }, 4 * 60 * 60 * 1000);
 }
 
 ipcMain.on('update:installNow', () => {

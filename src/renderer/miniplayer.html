@@ -32,7 +32,10 @@
   }
   button:hover { background: #1a1a22; }
   button:active { transform: scale(0.9); }
-  #playBtn { font-size: 17px; }
+  button svg { width: 15px; height: 15px; display: block; }
+  #playBtn .icon-pause { display: none; }
+  #playBtn.is-playing .icon-play { display: none; }
+  #playBtn.is-playing .icon-pause { display: block; }
   #closeBtn { font-size: 13px; color: #9a9aa8; margin-left: 4px; }
   #closeBtn:hover { background: #e5484d; color: #fff; }
   body { animation: miniIn .22s cubic-bezier(.16,1,.3,1); }
@@ -59,9 +62,12 @@
     </div>
   </div>
   <div class="controls">
-    <button id="prevBtn" title="Previous">⏮️</button>
-    <button id="playBtn" title="Play/Pause">▶️</button>
-    <button id="nextBtn" title="Next">⏭️</button>
+    <button id="prevBtn" title="Previous"><svg viewBox="0 0 24 24"><rect fill="currentColor" x="4.5" y="5" width="2.6" height="14" rx="1.3"/><path fill="currentColor" d="M19.2 6.3c1.1-.74 2.5.06 2.5 1.4v8.6c0 1.34-1.4 2.14-2.5 1.4l-6.9-4.6c-.96-.64-.96-2.06 0-2.7l6.9-4.6Z"/></svg></button>
+    <button id="playBtn" title="Play/Pause">
+      <svg class="icon-play" viewBox="0 0 24 24"><path fill="currentColor" d="M9 6.2c0-1.7 1.86-2.72 3.28-1.82l7.9 5.8a2.15 2.15 0 0 1 0 3.64l-7.9 5.8C10.86 20.52 9 19.5 9 17.8V6.2Z"/></svg>
+      <svg class="icon-pause" viewBox="0 0 24 24"><rect fill="currentColor" x="6.5" y="5" width="4.2" height="14" rx="1.8"/><rect fill="currentColor" x="13.3" y="5" width="4.2" height="14" rx="1.8"/></svg>
+    </button>
+    <button id="nextBtn" title="Next"><svg viewBox="0 0 24 24"><rect fill="currentColor" x="16.9" y="5" width="2.6" height="14" rx="1.3"/><path fill="currentColor" d="M4.8 6.3c-1.1-.74-2.5.06-2.5 1.4v8.6c0 1.34 1.4 2.14 2.5 1.4l6.9-4.6c.96-.64.96-2.06 0-2.7L4.8 6.3Z"/></svg></button>
     <button id="closeBtn" title="Close mini player">✕</button>
   </div>
 
