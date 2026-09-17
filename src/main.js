@@ -76,6 +76,7 @@ function createMiniWindow() {
     alwaysOnTop: true,
     skipTaskbar: true,
     backgroundColor: '#0b0b10',
+    icon: path.join(__dirname, '..', 'build', 'icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -136,6 +137,7 @@ function createWindow() {
     minHeight: 640,
     backgroundColor: '#0b0b10',
     autoHideMenuBar: true,
+    icon: path.join(__dirname, '..', 'build', 'icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

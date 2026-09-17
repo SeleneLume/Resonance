@@ -45,19 +45,26 @@
     "win": {
       "target": [
         "portable"
-      ]
+      ],
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
-      "artifactName": "${productName}-Setup-${version}.${ext}"
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "installerHeader": "build/installerHeader.bmp",
+      "installerSidebar": "build/installerSidebar.bmp",
+      "uninstallerSidebar": "build/uninstallerSidebar.bmp"
     },
     "publish": [
       {
         "provider": "github",
-        "owner": "Selene",
-        "repo": "Resonance"
+        "owner": "PON-TU-USUARIO-DE-GITHUB-AQUI",
+        "repo": "PON-EL-NOMBRE-DE-TU-REPO-AQUI"
       }
     ],
     "directories": {
