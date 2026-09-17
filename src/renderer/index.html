@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Resonance</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="ambientBg">
+  <div class="ambient-blob blob-1"></div>
+  <div class="ambient-blob blob-2"></div>
+  <div class="ambient-blob blob-3"></div>
+</div>
+<svg class="grain-svg" xmlns="http://www.w3.org/2000/svg">
+  <filter id="grainFilter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#grainFilter)"/>
+</svg>
+<div id="tooltip" class="tooltip hidden"></div>
+<div id="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span>Resonance</span>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="home">🏠 Home</button>
+      <button class="nav-item" data-view="songs">🎵 Songs</button>
+      <button class="nav-item" data-view="albums">💿 Albums</button>
+      <button class="nav-item" data-view="artists">👤 Artists</button>
+      <button class="nav-item" data-view="genres">🏷️ Genres</button>
+      <button class="nav-item" data-view="folders">📂 Folders</button>
+      <button class="nav-item" data-view="playlists">📑 Playlists</button>
+      <button class="nav-item" data-view="favorites">❤️ Favorites</button>
+      <button class="nav-item" data-view="stats">📈 Stats</button>
+      <button class="nav-item" data-view="settings">⚙️ Settings</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button id="addFolderBtn" class="ghost-btn full">+ Add Music Folder</button>
+      <button id="addYoutubeBtn" class="ghost-btn full" style="margin-top:8px">▶ Add YouTube Video</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="topbar">
+      <div class="search-wrap">
+        <input id="searchInput" type="text" placeholder="Search songs, artists, albums, lyrics..." />
+      </div>
+      <div class="topbar-right">
+        <span id="scanStatus" class="scan-status"></span>
+      </div>
+    </header>
+
+    <section id="viewport" class="viewport">
+      <!-- Views injected by renderer.js -->
+    </section>
+  </main>
+
+  <!-- Now Playing bar -->
+  <footer class="nowbar">
+    <div class="nowbar-track">
+      <div class="np-art-wrap" id="npArtWrap" data-tooltip="Open full Now Playing view">
+        <img id="npArt" class="np-art" src="" alt="" />
+        <div class="np-art-expand">⤢</div>
+      </div>
+      <div class="np-meta">
+        <div id="npTitle" class="np-title">No track playing</div>
+        <div id="npArtist" class="np-artist">—</div>
+      </div>
+      <button id="npFavBtn" class="icon-btn" data-tooltip="Add to Liked Songs">🤍</button>
+    </div>
+
+    <div class="nowbar-center">
+      <div class="transport">
+        <button id="shuffleBtn" class="icon-btn" data-tooltip="Shuffle: off">🔀</button>
+        <button id="prevBtn" class="icon-btn" data-tooltip="Previous track">⏮️</button>
+        <button id="playBtn" class="play-btn" data-tooltip="Play">▶️</button>
+        <button id="nextBtn" class="icon-btn" data-tooltip="Next track">⏭️</button>
+        <button id="repeatBtn" class="icon-btn" data-tooltip="Repeat: off">🔁</button>
+      </div>
+      <div class="scrub-row">
+        <span id="curTime" class="time">0:00</span>
+        <input id="seekBar" type="range" min="0" max="1000" value="0" />
+        <span id="remTime" class="time">0:00</span>
+      </div>
+    </div>
+
+    <div class="nowbar-right">
+      <span id="qualityBadge" class="quality-badge">—</span>
+      <button id="abLoopBtn" class="icon-btn ab-btn" data-tooltip="A/B Loop: set point A">🔁AB</button>
+      <button id="sleepTimerBtn" class="icon-btn" data-tooltip="Sleep Timer">😴</button>
+      <button id="miniPlayerBtn" class="icon-btn" data-tooltip="Open floating Mini Player">🪟</button>
+      <button id="lyricsBtn" class="icon-btn" data-tooltip="Show Lyrics panel">📝</button>
+      <button id="queueBtn" class="icon-btn" data-tooltip="Show Queue">📑</button>
+      <span class="vol-wrap">
+        🔊 <input id="volBar" type="range" min="0" max="100" value="80" />
+      </span>
+    </div>
+  </footer>
+
+  <!-- Side panels -->
+  <div id="lyricsPanel" class="side-panel hidden">
+    <div class="panel-header">
+      <span>Lyrics</span>
+      <div>
+        <button class="icon-btn" id="lyricsRomanizeBtn" data-tooltip="Show romanized lyrics">Aあ</button>
+        <button class="icon-btn" id="lyricsFixBtn" data-tooltip="Search for a different lyrics match">🔍</button>
+        <button class="icon-btn" id="lyricsFullscreenBtn" data-tooltip="Expand lyrics to fullscreen">⛶</button>
+        <button class="icon-btn close-panel" data-panel="lyricsPanel" data-tooltip="Close panel">✕</button>
+      </div>
+    </div>
+    <div id="lyricsContent" class="lyrics-content"></div>
+  </div>
+
+  <div id="queuePanel" class="side-panel hidden">
+    <div class="panel-header"><span>Queue</span><button class="icon-btn close-panel" data-panel="queuePanel" data-tooltip="Close panel">✕</button></div>
+    <div id="queueContent" class="queue-content"></div>
+  </div>
+
+  <!-- Immersive Now Playing overlay -->
+  <div id="npOverlay" class="np-overlay hidden">
+    <div id="npOverlayBg" class="np-overlay-bg"></div>
+    <div class="np-overlay-scrim"></div>
+    <button id="npOverlayClose" class="icon-btn np-overlay-close" data-tooltip="Close">✕</button>
+
+    <div class="np-overlay-topbar">
+      <button class="icon-btn" id="npBigRomanizeBtn" data-tooltip="Show romanized lyrics">Aあ</button>
+      <button class="icon-btn" id="npBigLyricsFullscreenBtn" data-tooltip="Expand lyrics to fullscreen">⛶</button>
+    </div>
+
+    <div class="np-overlay-content" id="npOverlayContent">
+      <!-- Left: the artwork/video stage and the playback controls beneath it -->
+      <section class="np-stage">
+        <div class="np-media" id="npMedia">
+          <canvas id="npVisualizer" class="np-visualizer" width="560" height="560"></canvas>
+          <div class="np-media-frame" id="npMediaFrame">
+            <div class="np-media-layer np-art-layer" id="npArtLayer">
+              <img id="npBigArt" class="np-big-art" src="" alt="" />
+            </div>
+            <!-- Video layer. For local tracks the <video> below plays, muted and
+                 time-synced to the audio engine; for YouTube tracks the existing
+                 YouTube iframe widget is docked over this frame instead, so the
+                 picture is always the exact player the audio is coming from. -->
+            <div class="np-media-layer np-video-layer" id="npVideoLayer">
+              <video id="npVideo" class="np-video" muted playsinline preload="auto"></video>
+              <div class="np-video-slot" id="npVideoSlot"></div>
+            </div>
+          </div>
+          <button id="npVideoToggle" class="np-media-toggle hidden" data-tooltip="Switch to music video">
+            <span class="np-media-toggle-icon">🎬</span>
+            <span class="np-media-toggle-label">Video</span>
+          </button>
+        </div>
+
+        <div class="np-track-info">
+          <div class="np-track-text">
+            <div class="np-big-title" id="npBigTitle">—</div>
+            <div class="np-big-artist" id="npBigArtist">—</div>
+            <div class="np-big-quality" id="npBigQuality">—</div>
+          </div>
+          <button id="npBigFav" class="icon-btn np-big-fav" data-tooltip="Add to Liked Songs">🤍</button>
+        </div>
+
+        <div class="np-big-scrub">
+          <input id="npBigSeek" type="range" min="0" max="1000" value="0" />
+          <div class="np-scrub-times">
+            <span id="npBigCurTime" class="time">0:00</span>
+            <span id="npBigRemTime" class="time">0:00</span>
+          </div>
+        </div>
+
+        <div class="transport np-big-transport">
+          <button id="npBigShuffle" class="icon-btn" data-tooltip="Shuffle">🔀</button>
+          <button id="npBigPrev" class="icon-btn" data-tooltip="Previous track">⏮️</button>
+          <button id="npBigPlay" class="play-btn big" data-tooltip="Play">▶️</button>
+          <button id="npBigNext" class="icon-btn" data-tooltip="Next track">⏭️</button>
+          <button id="npBigRepeat" class="icon-btn" data-tooltip="Repeat">🔁</button>
+        </div>
+
+        <div class="np-big-extras">
+          <button id="npBigMute" class="icon-btn np-vol-icon" data-tooltip="Mute">🔊</button>
+          <input id="npBigVol" type="range" min="0" max="100" value="80" />
+        </div>
+      </section>
+
+      <!-- Right: full-height scrolling lyrics, no container box -->
+      <section class="np-lyrics-stage" id="npLyricsStage">
+        <div class="np-lyrics-viewport" id="npLyricsViewport">
+          <div class="np-lyrics-track" id="npLyricsTrack"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Sleep timer popover -->
+  <div id="sleepTimerPopover" class="popover hidden">
+    <div class="popover-title">Sleep Timer</div>
+    <button class="popover-opt" data-min="10">10 minutes</button>
+    <button class="popover-opt" data-min="20">20 minutes</button>
+    <button class="popover-opt" data-min="30">30 minutes</button>
+    <button class="popover-opt" data-min="45">45 minutes</button>
+    <button class="popover-opt" data-min="60">1 hour</button>
+    <button class="popover-opt" data-special="endOfSong">End of current song</button>
+    <button class="popover-opt" data-special="endOfAlbum">End of current album</button>
+    <div class="popover-custom">
+      <input id="sleepCustomMin" type="number" min="1" placeholder="Custom (min)" />
+      <button id="sleepCustomBtn">Set</button>
+    </div>
+    <button id="sleepCancelBtn" class="popover-opt cancel">Cancel timer</button>
+  </div>
+
+  <!-- Metadata editor modal -->
+  <div id="metaModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header"><span>Edit Track Info</span><button class="icon-btn" id="metaModalClose">✕</button></div>
+      <div class="modal-body">
+        <div class="meta-art-row">
+          <img id="metaArtPreview" class="meta-art-preview" src="" />
+          <button id="metaChangeArt" class="ghost-btn">Change Artwork</button>
+        </div>
+        <div class="meta-grid">
+          <label>Title <input id="metaTitle" type="text" /></label>
+          <label>Artist <input id="metaArtist" type="text" /></label>
+          <label>Album <input id="metaAlbum" type="text" /></label>
+          <label>Album Artist <input id="metaAlbumArtist" type="text" /></label>
+          <label>Genre <input id="metaGenre" type="text" /></label>
+          <label>Year <input id="metaYear" type="number" /></label>
+          <label>Track # <input id="metaTrack" type="number" /></label>
+          <label>Disc # <input id="metaDisk" type="number" /></label>
+          <label>Composer <input id="metaComposer" type="text" /></label>
+          <label>Copyright <input id="metaCopyright" type="text" /></label>
+        </div>
+        <label class="meta-lyrics-label">Lyrics
+          <textarea id="metaLyrics" rows="5"></textarea>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button id="metaSaveBtn" class="primary-btn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div id="toastStack" class="toast-stack"></div>
+
+  <!-- Track right-click context menu -->
+  <div id="contextMenu" class="context-menu hidden"></div>
+
+  <!-- Keyboard shortcuts help -->
+  <div id="shortcutsModal" class="modal-backdrop hidden">
+    <div class="modal shortcuts-modal">
+      <div class="modal-header"><span>Keyboard Shortcuts</span><button class="icon-btn" id="shortcutsModalClose">✕</button></div>
+      <div class="modal-body">
+        <div class="shortcuts-grid" id="shortcutsGrid"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Fullscreen lyrics mode — deliberately outside #app, a fully independent immersive layer -->
+<div id="lyricsFullscreen" class="lyrics-fullscreen hidden">
+  <div id="lyricsFsBg" class="lyrics-fs-bg"></div>
+  <div class="lyrics-fs-scrim"></div>
+  <button id="lyricsFsRomanizeBtn" class="icon-btn np-overlay-close lyrics-fs-romanize-btn" data-tooltip="Show romanized lyrics">Aあ</button>
+  <button id="lyricsFsClose" class="icon-btn np-overlay-close" data-tooltip="Exit fullscreen lyrics">✕</button>
+  <div class="lyrics-fs-header">
+    <img id="lyricsFsArt" class="lyrics-fs-art" src="" alt="" />
+    <div>
+      <div id="lyricsFsTitle" class="lyrics-fs-title">—</div>
+      <div id="lyricsFsArtist" class="lyrics-fs-artist">—</div>
+    </div>
+  </div>
+  <div id="lyricsFsViewport" class="lyrics-fs-viewport">
+    <div id="lyricsFsTrack" class="lyrics-fs-track"></div>
+  </div>
+</div>
+
+<!-- YouTube player widget: genuinely visible per YouTube's embed terms; persists across all views while a YouTube track is active -->
+<div id="ytPlayerWidget" class="yt-player-widget hidden">
+  <div class="yt-widget-header">
+    <span id="ytWidgetTitle">YouTube</span>
+    <button id="ytWidgetClose" class="icon-btn" data-tooltip="Stop YouTube playback">✕</button>
+  </div>
+  <div id="ytPlayerHost" class="yt-player-host"></div>
+</div>
+
+<script src="renderer.js"></script>
+</body>
+</html>

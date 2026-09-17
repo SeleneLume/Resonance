@@ -1,0 +1,67 @@
+{
+  "name": "resonance-player",
+  "version": "1.0.0",
+  "description": "A local-first, high-quality music player",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win portable --x64",
+    "dist:win:fast": "electron-builder --win portable --x64 --config.compression=store",
+    "dist:win:installer": "electron-builder --win nsis --x64",
+    "release:win": "electron-builder --win nsis --x64 --publish always"
+  },
+  "author": "SeleneLume",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "music-metadata": "^7.14.0",
+    "node-taglib-sharp": "^6.0.3",
+    "kuroshiro": "^1.2.0",
+    "kuroshiro-analyzer-kuromoji": "^1.1.0",
+    "pinyin-pro": "^3.19.6",
+    "electron-updater": "^6.3.9"
+  },
+  "build": {
+    "appId": "com.selenelume.resonanceplayer",
+    "productName": "Resonance",
+    "asar": true,
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "tools/yt-dlp.exe",
+        "to": "yt-dlp.exe"
+      },
+      {
+        "from": "node_modules/kuromoji/dict",
+        "to": "kuromoji-dict"
+      }
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Selene",
+        "repo": "Resonance"
+      }
+    ],
+    "directories": {
+      "output": "release"
+    }
+  }
+}
